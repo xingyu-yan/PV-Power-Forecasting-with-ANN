@@ -1,6 +1,7 @@
 '''
-Created on December 28, 2016
-@author: xingyu, at Ecole Centrale de Lille
+@author: xingyu, created on December 28, 2016, at Ecole Centrale de Lille
+https://github.com/xingyu-yan
+
 # This programme is for PV power forecasting with ANN
 # reference: Coursera Machine Learning open course (Andrew Ng)
 '''
@@ -44,19 +45,6 @@ nn_params1 = np.matrix(np.reshape(Theta1, Theta1.shape[0]*Theta1.shape[1], order
 nn_params2 = np.matrix(np.reshape(Theta2, Theta2.shape[0]*Theta2.shape[1], order='F')).T
 nn_params = np.r_[nn_params1,nn_params2]
 print(nn_params.shape)
-# Part 3: Compute cost (feedforward)
-lamb = 0
-J,grad = nnCostFunction(nn_params,input_layer_size,hidden_layer_size,num_labels,X_train,y_train,lamb)
-print ('Cost at parameters without regulariyation (loaded from Theta):',J)
-
-# Part 4: Implement regularization
-lamb = 1
-J,grad = nnCostFunction(nn_params,input_layer_size,hidden_layer_size,num_labels,X_train,y_train,lamb)
-print ('Cost at parameters with regularization (loaded from Theta):',J)
-
-# Part 5: Sigmoid gradient
-g = sigmoidGradient(np.array([-1,-0.5,0,0.5,1]))
-print ('Evaluation sigmoid gradient\n',g,'\n')
 
 # Part 6: Initializing parameters
 
@@ -65,25 +53,12 @@ initial_Theta2 = randInitializeWeights(hidden_layer_size,num_labels)
 
 initial_nn_params = np.r_[np.reshape(initial_Theta1,Theta1.shape[0]*Theta1.shape[1],order='F'),np.reshape(initial_Theta2,Theta2.shape[0]*Theta2.shape[1],order='F')]
 
-# Part 7: Implement backpropagation
-checkNNGradients(0)
-
-# Part 8: Implement regularization
-lamb = 3
-checkNNGradients(lamb)
-debug_J = nnCostFunction(nn_params,input_layer_size,hidden_layer_size,num_labels,X_train,y_train,lamb)
-print ('Cost at (fixed) debugging parameters (lambda =',lamb,'):',debug_J[0],'\n')
-
 # Part 9: Training NN
 lamb = 0.04
-#Theta = cgbt(initial_nn_params,X,y,input_layer_size,hidden_layer_size,num_labels,lamb,0.25,0.5,500,1e-8)
 Theta = trainNN(initial_nn_params,X_train,y_train,input_layer_size,hidden_layer_size,num_labels,lamb,0.25,0.5,50,1e-8)
 
 Theta1 = np.matrix(np.reshape(Theta[:hidden_layer_size*(input_layer_size+1)],(hidden_layer_size,input_layer_size+1),order='F'))
 Theta2 = np.matrix(np.reshape(Theta[hidden_layer_size*(input_layer_size+1):],(num_labels,hidden_layer_size+1),order='F'))
-
-# Part 10: Visualize weights
-#displayData(Theta1[:,1:],'courseraEx04_fig02.png')
 
 # Part 11: Implement predict
 p = predict(Theta1,Theta2,X_train).T
